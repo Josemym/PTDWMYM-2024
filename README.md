@@ -25,7 +25,7 @@ Rúbrica El objetivo de esta prueba técnica es evaluar las habilidades para el 
 
 HERRAMIENTAS
 
-    Debes usar como lenguaje de programación PYTHON o PHP.
+    Debes usar como lenguaje de programación PHP.
     El Framework a usar es a criterio del postulante.
     El motor de base de datos a usar es a elección del postulante.
     Puedes usar cualquier otra libería adicional para cumplir con el objetivo de la prueba.
