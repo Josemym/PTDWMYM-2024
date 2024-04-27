@@ -1,0 +1,9 @@
+{
+    "conexion" : {
+        "server" : "localhost",
+        "user" : "intranetdb",
+        "password" : "56dh$*23rtDEif",
+        "database" : "mym",
+        "port" : "3306"
+    }
+}
