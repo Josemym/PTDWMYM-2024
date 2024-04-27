@@ -10,7 +10,7 @@
         if(isset($_POST['btn_pagar'])){
             $nro_cuota_pagar = $_POST['nro_cuota_pagar'];
         
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_financiamiento?ctaf_nro_cuota='.$nro_cuota_pagar;
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_financiamiento?ctaf_nro_cuota='.$nro_cuota_pagar;
             $_curl = new curl($url);
             $_tablas = new tablas;
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
@@ -20,7 +20,7 @@
             $ctaf_nro_cuota = $cuentas_financiamiento[0]['ctaf_nro_cuota'];
             $ctaf_total_cuota = $cuentas_financiamiento[0]['ctaf_total_cuota'];
             
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_cobrar?all';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_cobrar?all';
             $_curl = new curl($url);
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
             $_curl->close();
@@ -39,7 +39,7 @@
                         $ctac_saldo = $row['ctac_saldo'] - $ctaf_total_cuota;
                         $ctaf_total_cuota = 0;
                     }
-                    $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_cobrar';
+                    $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_cobrar';
                     $array = [
                         'ctac_nro_documento'=>$row['ctac_nro_documento'],
                         'ctac_saldo'=>$ctac_saldo,
@@ -50,7 +50,7 @@
             }
                 
             $ctaf_fecha_pago = date('Y-m-d');
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_financiamiento';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_financiamiento';
             $array = [
                 'ctaf_nro_cuota'=>$nro_cuota_pagar,
                 'ctaf_fecha_pago'=>$ctaf_fecha_pago,
@@ -58,7 +58,7 @@
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_CUSTOMREQUEST, 'PUT')->buildQuery($array)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
             $_curl->close();
 
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_cobrar?all';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_cobrar?all';
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
             $_curl->close();
         
@@ -66,9 +66,11 @@
             usort($cuentas_cobrar, function ($a, $b) {
                 return strcmp($a["ctac_fecha_emision"], $b["ctac_fecha_emision"]);
             });
-            $_tablas->ctas_cobrar($cuentas_cobrar);
+            $total_deuda = array_sum(array_column($cuentas_cobrar,'ctac_total'));
+            $total_saldo = array_sum(array_column($cuentas_cobrar,'ctac_saldo'));
+            $_tablas->ctas_cobrar($cuentas_cobrar, $total_deuda, $total_saldo);
 
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_financiamiento?all';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_financiamiento?all';
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
             $_curl->close();
             $cuentas_financiamiento = json_decode($response,true);

@@ -18,7 +18,7 @@
         require_once 'class/curl.class.php';
         require_once 'class/tablas.class.php';
         
-        $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_cobrar?all';
+        $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_cobrar?all';
         
         $_curl = new curl($url);
         $_tablas = new tablas;
@@ -30,8 +30,8 @@
             return strcmp($a["ctac_fecha_emision"], $b["ctac_fecha_emision"]);
         });
         $total_deuda = array_sum(array_column($cuentas_cobrar,'ctac_total'));
-        $_tablas->ctas_cobrar($cuentas_cobrar);
-        echo '<label>Monto Total a Financiar : '.$total_deuda.'</label><br>';
+        $total_saldo = array_sum(array_column($cuentas_cobrar,'ctac_saldo'));
+        $_tablas->ctas_cobrar($cuentas_cobrar, $total_deuda, $total_saldo);
         
         ?>
 

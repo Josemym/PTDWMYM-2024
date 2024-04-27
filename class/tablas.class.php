@@ -1,6 +1,6 @@
 <?php
 class tablas{
-    public function ctas_cobrar(array $array)
+    public function ctas_cobrar(array $array, $ctac_total_general, $ctac_total_saldo)
     {
         echo '<table border>
                     <td>Id</td>
@@ -22,6 +22,16 @@ class tablas{
                         <td>'.$row['ctac_id_cliente'].'</td>
                     </tr>';
         }
+        echo '  <tr>
+                    <td></td>
+                    <td>Importe Total</td>
+                    <td></td>
+                    <td></td>
+                    <td>'.$ctac_total_general.'</td>
+                    <td>'.$ctac_total_saldo.'</td>
+                    <td></td>
+                </tr>
+        ';
         echo '</table>';
         
         echo '<br>';

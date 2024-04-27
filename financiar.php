@@ -11,7 +11,7 @@
         if(isset($_POST['btn_financiar'])){
             $nro_cuotas = $_POST['nro_cuotas'];
         
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_cobrar?all';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_cobrar?all';
             $_curl = new curl($url);
             $_tablas = new tablas;
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
@@ -22,9 +22,9 @@
                 return strcmp($a["ctac_fecha_emision"], $b["ctac_fecha_emision"]);
             });
             $total_deuda = array_sum(array_column($cuentas_cobrar,'ctac_total'));
-        
-            $_tablas->ctas_cobrar($cuentas_cobrar);
-            echo '<label>Monto Total a Financiar : '.$total_deuda.'</label><br>';
+            $total_saldo = array_sum(array_column($cuentas_cobrar,'ctac_saldo'));
+            $_tablas->ctas_cobrar($cuentas_cobrar, $total_deuda, $total_saldo);
+            
             echo '<label>Numero de Cuotas a Financiar : '.$nro_cuotas.'</label><br><br>';
         
             $ctaf_id_cliente = $cuentas_cobrar[0]['ctac_id_cliente'];
@@ -33,7 +33,7 @@
         
             for ($i=1; $i<=$nro_cuotas; $i++) {
                 $fecha_vencimiento = date("Y-m-d",strtotime($fecha_vencimiento.' + 1 month'));
-                $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_financiamiento';
+                $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_financiamiento';
                 $_curl = new curl($url);
                 $array = [
                     'ctaf_nro_cuota'=>$i,
@@ -45,7 +45,7 @@
                 $_curl->close();
             }
         
-            $url = 'http://intranetdev.limabus.com.pe/mym/cuentas_financiamiento?all';
+            $url = 'http://intranetdev.limabus.com.pe/PTDWMYM-2024/cuentas_financiamiento?all';
             $_curl = new curl($url);
             $response = $_curl->init()->setOption(CURLOPT_URL,$url)->setOption(CURLOPT_RETURNTRANSFER,true)->execute();
             $_curl->close();
